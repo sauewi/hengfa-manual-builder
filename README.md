@@ -1,5 +1,7 @@
 # hengfa-manual-builder
 
+[![CI](https://github.com/sauewi/hengfa-manual-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/sauewi/hengfa-manual-builder/actions/workflows/ci.yml)
+
 A reusable Codex skill for producing professional bilingual HTML manuals for Hengfa-style heat-transfer and hot-stamping equipment.
 
 The skill focuses on the parts that make non-standard machine manuals hard to repeat well:

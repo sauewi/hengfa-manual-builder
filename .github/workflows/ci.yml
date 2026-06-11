@@ -3,6 +3,7 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   release-check:
@@ -17,4 +18,3 @@ jobs:
           python scripts/check_release.py .
           python -m json.tool evals/evals.json > /tmp/evals.json
           python -m py_compile scripts/audit_manual_project.py scripts/check_release.py
-
