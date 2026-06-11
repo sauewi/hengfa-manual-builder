@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Check that this skill repository is ready for public release."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+
+TEXT_EXTENSIONS = {
+    ".md",
+    ".py",
+    ".json",
+    ".yml",
+    ".yaml",
+    ".txt",
+    ".gitignore",
+}
+
+TEXT_FILENAMES = {"LICENSE", ".gitignore"}
+
+REQUIRED_FILES = [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "PUBLISHING.md",
+    "evals/evals.json",
+    "references/manual-builder-workflow.md",
+    "references/project-structure.md",
+    "references/audit-checklist.md",
+    "scripts/audit_manual_project.py",
+    "scripts/check_release.py",
+    "templates/项目看板.md",
+    "templates/SFC时序审核稿.md",
+]
+
+LOCAL_USER_FRAGMENT = "114" + "05"
+LOCAL_PROJECT_NAME = "大面板" + "热转印机说明书"
+SOURCE_PROJECT_MODEL = "HF-" + "1000"
+LEGACY_SKILL_NAME = "thermal-transfer-" + "manual"
+CREDENTIAL_PATTERN = "api[_-]?key|sec" + "ret|pass" + "word|to" + "ken"
+
+SENSITIVE_PATTERNS = [
+    (re.compile(r"C:\\Users\\[^\\\s]+", re.I), "personal Windows user path"),
+    (re.compile(re.escape(LOCAL_USER_FRAGMENT)), "local Windows username fragment"),
+    (re.compile(re.escape(LOCAL_PROJECT_NAME)), "specific local project name"),
+    (re.compile(re.escape(SOURCE_PROJECT_MODEL)), "specific source-project model"),
+    (re.compile(CREDENTIAL_PATTERN, re.I), "credential keyword"),
+]
+
+BINARY_SUFFIXES = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".webp",
+    ".pdf",
+    ".docx",
+    ".pptx",
+    ".xlsx",
+    ".zip",
+}
+
+
+def iter_files(root: Path) -> list[Path]:
+    return [
+        p
+        for p in root.rglob("*")
+        if p.is_file() and ".git" not in p.parts and "__pycache__" not in p.parts
+    ]
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def check_repo(root: Path) -> dict:
+    failures: list[str] = []
+    warnings: list[str] = []
+
+    for rel in REQUIRED_FILES:
+        if not (root / rel).is_file():
+            failures.append(f"Missing required file: {rel}")
+
+    files = iter_files(root)
+    binary_files = [
+        str(p.relative_to(root)).replace("\\", "/")
+        for p in files
+        if p.suffix.lower() in BINARY_SUFFIXES
+    ]
+    if binary_files:
+        failures.append("Binary/private-source candidates are bundled: " + ", ".join(binary_files))
+
+    text_hits: list[dict[str, str]] = []
+    for path in files:
+        rel = str(path.relative_to(root)).replace("\\", "/")
+        if path.suffix.lower() not in TEXT_EXTENSIONS and path.name not in TEXT_FILENAMES:
+            warnings.append(f"Review non-standard file type: {rel}")
+            continue
+        text = read_text(path)
+        for regex, label in SENSITIVE_PATTERNS:
+            for match in regex.finditer(text):
+                line_no = text.count("\n", 0, match.start()) + 1
+                text_hits.append({"file": rel, "line": str(line_no), "kind": label})
+
+    if text_hits:
+        failures.append("Sensitive text patterns found.")
+
+    try:
+        evals = json.loads(read_text(root / "evals/evals.json"))
+        if evals.get("skill_name") != "hengfa-manual-builder":
+            failures.append("evals/evals.json skill_name mismatch.")
+        if len(evals.get("evals", [])) < 3:
+            failures.append("Expected at least 3 eval prompts.")
+    except Exception as exc:  # noqa: BLE001 - report validation details.
+        failures.append(f"Invalid evals/evals.json: {exc}")
+
+    skill_text = read_text(root / "SKILL.md") if (root / "SKILL.md").exists() else ""
+    if LEGACY_SKILL_NAME in skill_text:
+        failures.append("SKILL.md still references a legacy manual skill.")
+    if "version: 0.2.0" not in skill_text:
+        warnings.append("SKILL.md version is not 0.2.0.")
+
+    return {
+        "passed": not failures,
+        "file_count": len(files),
+        "failures": failures,
+        "warnings": warnings,
+        "sensitive_hits": text_hits,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("repo", nargs="?", default=".", help="Repository root")
+    parser.add_argument("--json", action="store_true", help="Print JSON report")
+    args = parser.parse_args()
+
+    report = check_repo(Path(args.repo).resolve())
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    else:
+        print("Release check:", "PASS" if report["passed"] else "FAIL")
+        print(f"Files checked: {report['file_count']}")
+        for warning in report["warnings"]:
+            print("WARNING:", warning)
+        for failure in report["failures"]:
+            print("FAILURE:", failure)
+        for hit in report["sensitive_hits"]:
+            print(f"SENSITIVE: {hit['file']}:{hit['line']} {hit['kind']}")
+    return 0 if report["passed"] else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

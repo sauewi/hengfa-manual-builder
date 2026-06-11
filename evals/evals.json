@@ -1,0 +1,20 @@
+{
+  "skill_name": "hengfa-manual-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我要用一批设备照片、HMI截图和反馈图，制作一份平面热转印机中英双语HTML说明书，SFC时序必须先整理出来。",
+      "expected_output": "Creates a managed project workflow, identifies required folders and source documents, drafts an SFC review gate before final HMI parameter explanations, and keeps the final deliverable as bilingual HTML."
+    },
+    {
+      "id": 2,
+      "prompt": "这些机械调节图片只有中文标注，说明书要中英双语，图片不能失真。",
+      "expected_output": "Builds an image annotation list, uses English as supplemental labels, preserves original machine photos, and records that image generation is only a wording/layout aid when it redraws equipment."
+    },
+    {
+      "id": 3,
+      "prompt": "用户已经给了SFC审核意见，现在要吸收意见、重写最终HTML，并导出PDF，分页不能影响阅读。",
+      "expected_output": "Updates the SFC source of truth first, revises final HTML without internal notes, exports an A4 PDF, and verifies page breaks, image references, and project board delivery records."
+    }
+  ]
+}

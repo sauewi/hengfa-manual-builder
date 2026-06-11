@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+Thumbs.db
+
+# Local manual projects and customer artifacts should never be committed.
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+outputs/
+output/
+临时文件/
+输出/
+
