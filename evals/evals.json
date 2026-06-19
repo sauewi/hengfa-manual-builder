@@ -15,6 +15,11 @@
       "id": 3,
       "prompt": "用户已经给了SFC审核意见，现在要吸收意见、重写最终HTML，并导出PDF，分页不能影响阅读。",
       "expected_output": "Updates the SFC source of truth first, revises final HTML without internal notes, exports an A4 PDF, and verifies page breaks, image references, and project board delivery records."
+    },
+    {
+      "id": 4,
+      "prompt": "我有一页HMI参数截图，里面有延时、速度、卷膜方式和手动按钮。请直接在说明书技能里解释，不要再调用别的HMI参数技能。",
+      "expected_output": "Uses the integrated HMI/SFC parameter workflow, builds a parameter confirmation model, maps timing and motion parameters to SFC steps, preserves UI English, and outputs customer-ready bilingual explanations without requiring another skill."
     }
   ]
 }

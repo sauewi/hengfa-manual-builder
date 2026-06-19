@@ -90,6 +90,8 @@ SFC 审核稿必须包含：
 
 ## 6. HMI 参数解释
 
+本技能已内置 HMI/SFC 参数解释流程，完整细则见 `references/hmi-parameter-explanation.md`。制作说明书时不需要再调用单独的 HMI 参数解释技能。
+
 每个参数按以下顺序写：
 
 1. 中文名 + 原 UI English。
@@ -156,7 +158,7 @@ SFC 审核稿必须包含：
 沉淀时分层：
 
 - 调机机理、故障判断、时间原点、收卷选择：进入或同步到 `hotfoil-tune`。
-- HMI 参数、SFC 映射、客户解释模板：进入或同步到 `hmi-param-explainer`。
+- HMI 参数、SFC 映射、客户解释模板：进入 `hengfa-manual-builder` 的内置 HMI 参数解释参考。
 - 说明书项目结构、章节模板、确认关卡、验证方法：进入 `hengfa-manual-builder`。
 - 术语若属于本类恒发热转印设备的固定叫法，也进入 `hengfa-manual-builder` 的参考材料，避免依赖外部旧技能。
 

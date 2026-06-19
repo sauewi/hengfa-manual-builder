@@ -31,6 +31,7 @@ Use this skill when a manual project involves:
 ```text
 SKILL.md                              Main skill instructions
 references/manual-builder-workflow.md Skill-internal workflow reference
+references/hmi-parameter-explanation.md Integrated HMI/SFC parameter workflow
 references/project-structure.md       Folder and naming contract
 references/audit-checklist.md         Manual delivery audit checklist
 templates/项目看板.md                  Project board template
@@ -64,10 +65,11 @@ python -m json.tool evals/evals.json
 python -m py_compile scripts/audit_manual_project.py scripts/check_release.py
 ```
 
-## Related Skills
+## Integrated Capabilities
 
-- `hotfoil-tune`: mechanism-based heat-transfer tuning and troubleshooting.
-- `hmi-param-explainer`: HMI parameter and SFC explanation.
+- HMI parameter explanation is built into this skill through `references/hmi-parameter-explanation.md`.
+- SFC/timing review, parameter confirmation tables, evidence discipline, and customer-ready bilingual parameter cards are handled inside this skill.
+- Mechanism-based heat-transfer troubleshooting can still be informed by the user's shop-floor knowledge, but this skill no longer requires chaining a separate HMI parameter skill.
 
 ## License
 

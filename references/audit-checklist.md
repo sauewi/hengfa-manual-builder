@@ -24,6 +24,10 @@ Run this checklist before calling the manual complete.
 ## Content
 
 - [ ] SFC sequence supports HMI parameter explanations.
+- [ ] Important HMI parameters have a confirmation table or equivalent internal mapping.
+- [ ] HMI explanations preserve original UI English when visible on the screen.
+- [ ] Each customer-facing HMI explanation has function, use scenario, and verification when possible.
+- [ ] Rows that would be `Needs question` are excluded from final customer HTML.
 - [ ] Timing parameters identify their action point or time origin.
 - [ ] Safety bypass controls are described as debugging-only / not for normal production.
 - [ ] Uninstalled or unused mechanisms are not written as normal operation steps.

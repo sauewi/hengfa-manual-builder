@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "PUBLISHING.md",
     "evals/evals.json",
     "references/manual-builder-workflow.md",
+    "references/hmi-parameter-explanation.md",
     "references/project-structure.md",
     "references/audit-checklist.md",
     "scripts/audit_manual_project.py",
@@ -41,6 +42,7 @@ LOCAL_USER_FRAGMENT = "114" + "05"
 LOCAL_PROJECT_NAME = "大面板" + "热转印机说明书"
 SOURCE_PROJECT_MODEL = "HF-" + "1000"
 LEGACY_SKILL_NAME = "thermal-transfer-" + "manual"
+MERGED_HMI_SKILL_NAME = "hmi-param-" + "explainer"
 CREDENTIAL_PATTERN = "api[_-]?key|sec" + "ret|pass" + "word|to" + "ken"
 
 SENSITIVE_PATTERNS = [
@@ -95,6 +97,7 @@ def check_repo(root: Path) -> dict:
         failures.append("Binary/private-source candidates are bundled: " + ", ".join(binary_files))
 
     text_hits: list[dict[str, str]] = []
+    external_skill_hits: list[str] = []
     for path in files:
         rel = str(path.relative_to(root)).replace("\\", "/")
         if path.suffix.lower() not in TEXT_EXTENSIONS and path.name not in TEXT_FILENAMES:
@@ -105,9 +108,16 @@ def check_repo(root: Path) -> dict:
             for match in regex.finditer(text):
                 line_no = text.count("\n", 0, match.start()) + 1
                 text_hits.append({"file": rel, "line": str(line_no), "kind": label})
+        if path.name != "check_release.py":
+            if MERGED_HMI_SKILL_NAME in text:
+                external_skill_hits.append(f"{rel}: merged HMI skill reference")
+            if LEGACY_SKILL_NAME in text:
+                external_skill_hits.append(f"{rel}: legacy manual skill reference")
 
     if text_hits:
         failures.append("Sensitive text patterns found.")
+    if external_skill_hits:
+        failures.append("External skill dependency references found: " + ", ".join(external_skill_hits))
 
     try:
         evals = json.loads(read_text(root / "evals/evals.json"))
@@ -119,10 +129,10 @@ def check_repo(root: Path) -> dict:
         failures.append(f"Invalid evals/evals.json: {exc}")
 
     skill_text = read_text(root / "SKILL.md") if (root / "SKILL.md").exists() else ""
-    if LEGACY_SKILL_NAME in skill_text:
-        failures.append("SKILL.md still references a legacy manual skill.")
-    if "version: 0.2.0" not in skill_text:
-        warnings.append("SKILL.md version is not 0.2.0.")
+    if LEGACY_SKILL_NAME in skill_text or MERGED_HMI_SKILL_NAME in skill_text:
+        failures.append("SKILL.md still references an external skill that should be integrated.")
+    if "version: 0.3.0" not in skill_text:
+        warnings.append("SKILL.md version is not 0.3.0.")
 
     return {
         "passed": not failures,

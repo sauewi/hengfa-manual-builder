@@ -1,6 +1,6 @@
 ---
 name: hengfa-manual-builder
-version: 0.2.0
+version: 0.3.0
 description: >
   Use this skill whenever creating, revising, auditing, installing, or
   open-sourcing a Hengfa-style heat-transfer machine manual skill workflow,
@@ -13,7 +13,7 @@ description: >
 
 # Hengfa Manual Builder
 
-This skill turns a Hengfa-style heat-transfer machine manual project into a repeatable skill-driven production workflow. It is an orchestration layer: use `hotfoil-tune` for mechanism-based tuning logic and `hmi-param-explainer` for HMI/SFC explanations. Keep the project structure, chapter template, verification gates, and handoff rules inside this skill so the useful deliverable is the skill package, not a standalone SOP document.
+This skill turns a Hengfa-style heat-transfer machine manual project into a repeatable skill-driven production workflow. It owns the project structure, chapter template, HMI/SFC parameter explanation, verification gates, and handoff rules inside one skill so manual creation does not require chaining a second HMI-parameter skill.
 
 ## Operating Rules
 
@@ -77,6 +77,31 @@ Create the SFC review draft before final HMI explanations. Include:
 For timing parameters, state the time origin. If the user later submits feedback, absorb it into the SFC document and change the status to confirmed before using it in final customer content.
 
 If the user asks not to pause for confirmation, still save the review gate as a project artifact and proceed only with evidence-backed or mechanism-safe wording. Do not publish uncertain details as fact.
+
+### 2.5 Integrated HMI Parameter Explanation
+
+Explain HMI parameters through machine behavior, not translation alone. For each meaningful parameter or manual button, build or mentally complete this model:
+
+| ID | UI Chinese | UI English from screen | Unit/value | Controlled mechanism | SFC step | Confirmed behavior | Adjustment effect | Use scenario | Verification | Evidence | Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+
+Status rules:
+
+- `Confirmed`: backed by screenshot, user confirmation, project file, photo, SFC, or visible machine evidence.
+- `Mechanism-safe`: generally safe explanation without hidden options, numeric ranges, or unconfirmed sequence claims.
+- `Needs question`: keep out of final customer HTML until confirmed.
+
+Write customer-facing parameter explanations in this order:
+
+1. Chinese label plus original UI English.
+2. SFC step or transition.
+3. Controlled action, mechanism, or process.
+4. Adjustment effect.
+5. Use scenario.
+6. Verification method.
+7. Caution only when safety, collision, heating, pressure, or timing risk exists.
+
+Preserve original UI English as the anchor even if it is imperfect. Add a clearer explanation after it instead of replacing it. If a parameter changes timing, mode, speed, position, sensor handling, or actuator behavior, locate it on the SFC before writing final manual text. See `references/hmi-parameter-explanation.md` for the full integrated workflow.
 
 ### 3. Image Bilingualization
 
@@ -150,6 +175,7 @@ Do not end with a generic offer. Name the next concrete artifact if more work re
 ## Related References
 
 - `references/manual-builder-workflow.md`: full workflow with stage gates and checklists.
+- `references/hmi-parameter-explanation.md`: integrated HMI/SFC parameter explanation workflow.
 - `references/project-structure.md`: project folder and file naming standard.
 - `references/audit-checklist.md`: final verification checklist.
 - `templates/项目看板.md`: reusable project board template.
