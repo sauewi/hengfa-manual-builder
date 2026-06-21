@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit a Hengfa-style bilingual HTML manual project.
+"""Audit an industrial-equipment bilingual HTML manual project.
 
 The script is intentionally conservative. It reports missing evidence and
 customer-facing risk markers; it does not try to prove machine behavior.
@@ -27,9 +27,11 @@ REQUIRED_DIRS = [
 
 REQUIRED_FILES = [
     Path("项目管理") / "项目看板.md",
+    Path("项目管理") / "交接摘要.md",
     Path("项目管理") / "SFC时序审核稿.md",
     Path("源稿") / "图片双语注释清单.md",
     Path("源稿") / "HTML章节结构.md",
+    Path("源稿") / "A4分页规划.md",
 ]
 
 BAD_FINAL_TERMS = [
@@ -108,6 +110,14 @@ def audit(project: Path) -> dict:
         return result
 
     html = read_text(final_html)
+    checks["has_a4_page_rule"] = bool(re.search(r"@page\s*\{[^}]*size\s*:\s*A4", html, re.I | re.S))
+    checks["has_explicit_a4_sheets"] = "a4-sheet" in html and bool(
+        re.search(r"210\s*mm", html, re.I) and re.search(r"297\s*mm", html, re.I)
+    )
+    if not checks["has_a4_page_rule"]:
+        failures.append("Final HTML has no A4 @page rule.")
+    if not checks["has_explicit_a4_sheets"]:
+        failures.append("Final HTML lacks explicit 210 mm x 297 mm A4 sheet containers.")
     refs = image_refs(html)
     missing_refs = []
     absolute_refs = []
@@ -137,11 +147,6 @@ def audit(project: Path) -> dict:
     if en_markers < 10 or zh_markers < 100:
         warnings.append("Bilingual coverage markers look low; inspect manually.")
 
-    checks["has_print_css"] = "@media print" in html
-    checks["has_page_break_protection"] = "break-inside" in html or "page-break-inside" in html
-    if not checks["has_print_css"]:
-        warnings.append("No print CSS found.")
-
     sfc_path = project / "项目管理" / "SFC时序审核稿.md"
     if sfc_path.exists():
         sfc_text = read_text(sfc_path)
@@ -149,10 +154,6 @@ def audit(project: Path) -> dict:
         checks["sfc_confirmed_parameter_rows"] = sfc_text.count("已确认")
         if not checks["sfc_status_confirmed"]:
             warnings.append("SFC file does not look confirmed.")
-
-    pdfs = list(project.glob("*中英双语.pdf")) + list((project / "输出").glob("*中英双语.pdf"))
-    checks["pdf_count"] = len(pdfs)
-    checks["pdf_files"] = [str(path) for path in pdfs]
 
     result["passed"] = not failures
     return result

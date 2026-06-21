@@ -1,0 +1,4 @@
+interface:
+  display_name: "MG Industrial Equipment Manual Builder"
+  short_description: "Build A4 industrial equipment manuals"
+  default_prompt: "Use $mg-industrial-equipment-manual-builder to create an evidence-backed A4 HTML manual for this industrial equipment."

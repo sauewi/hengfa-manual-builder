@@ -1,6 +1,6 @@
 # Publishing Checklist
 
-Use this before making `hengfa-manual-builder` public.
+Use this before making `mg-industrial-equipment-manual-builder` public.
 
 ## Remove Local Data
 
@@ -15,7 +15,7 @@ Use this before making `hengfa-manual-builder` public.
 - [ ] The workflow reference is inside `references/`.
 - [ ] Templates are reusable and do not contain one-project-only facts.
 - [ ] The audit script works with any compatible manual project path.
-- [ ] Eval prompts cover SFC, bilingual image annotation, and final PDF/page-break verification.
+- [ ] Eval prompts cover SFC, bilingual image annotation, A4-paged HTML, large page images, and compact phase handoff.
 
 ## License
 

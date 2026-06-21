@@ -24,6 +24,7 @@ TEXT_FILENAMES = {"LICENSE", ".gitignore"}
 
 REQUIRED_FILES = [
     "SKILL.md",
+    "agents/openai.yaml",
     "README.md",
     "LICENSE",
     "PUBLISHING.md",
@@ -32,10 +33,15 @@ REQUIRED_FILES = [
     "references/hmi-parameter-explanation.md",
     "references/project-structure.md",
     "references/audit-checklist.md",
+    "references/html-only-delivery.md",
+    "references/a4-page-layout.md",
+    "references/rework-prevention.md",
     "scripts/audit_manual_project.py",
     "scripts/check_release.py",
     "templates/项目看板.md",
     "templates/SFC时序审核稿.md",
+    "templates/交接摘要.md",
+    "templates/A4分页规划.md",
 ]
 
 LOCAL_USER_FRAGMENT = "114" + "05"
@@ -43,7 +49,12 @@ LOCAL_PROJECT_NAME = "大面板" + "热转印机说明书"
 SOURCE_PROJECT_MODEL = "HF-" + "1000"
 LEGACY_SKILL_NAME = "thermal-transfer-" + "manual"
 MERGED_HMI_SKILL_NAME = "hmi-param-" + "explainer"
-CREDENTIAL_PATTERN = "api[_-]?key|sec" + "ret|pass" + "word|to" + "ken"
+CURRENT_SKILL_NAME = "mg-industrial-equipment-manual-builder"
+OLD_SKILL_NAME = "hengfa-manual-" + "builder"
+OLD_SKILL_TITLE = "Hengfa Manual " + "Builder"
+CREDENTIAL_PATTERN = (
+    "api[_-]?key|sec" + "ret|pass" + "word|(?:access|auth|bearer|refresh)[_-]?to" + "ken"
+)
 
 SENSITIVE_PATTERNS = [
     (re.compile(r"C:\\Users\\[^\\\s]+", re.I), "personal Windows user path"),
@@ -109,6 +120,8 @@ def check_repo(root: Path) -> dict:
                 line_no = text.count("\n", 0, match.start()) + 1
                 text_hits.append({"file": rel, "line": str(line_no), "kind": label})
         if path.name != "check_release.py":
+            if OLD_SKILL_NAME in text or OLD_SKILL_TITLE in text:
+                external_skill_hits.append(f"{rel}: old skill identity")
             if MERGED_HMI_SKILL_NAME in text:
                 external_skill_hits.append(f"{rel}: merged HMI skill reference")
             if LEGACY_SKILL_NAME in text:
@@ -121,7 +134,7 @@ def check_repo(root: Path) -> dict:
 
     try:
         evals = json.loads(read_text(root / "evals/evals.json"))
-        if evals.get("skill_name") != "hengfa-manual-builder":
+        if evals.get("skill_name") != CURRENT_SKILL_NAME:
             failures.append("evals/evals.json skill_name mismatch.")
         if len(evals.get("evals", [])) < 3:
             failures.append("Expected at least 3 eval prompts.")
@@ -131,8 +144,18 @@ def check_repo(root: Path) -> dict:
     skill_text = read_text(root / "SKILL.md") if (root / "SKILL.md").exists() else ""
     if LEGACY_SKILL_NAME in skill_text or MERGED_HMI_SKILL_NAME in skill_text:
         failures.append("SKILL.md still references an external skill that should be integrated.")
-    if "version: 0.3.0" not in skill_text:
-        warnings.append("SKILL.md version is not 0.3.0.")
+    if not re.search(rf"(?m)^name:\s*{re.escape(CURRENT_SKILL_NAME)}\s*$", skill_text):
+        failures.append("SKILL.md name does not match the release identity.")
+    if not re.search(r'(?m)^\s+version:\s*["\']?0\.7\.0["\']?\s*$', skill_text):
+        failures.append("SKILL.md version is not 0.7.0.")
+
+    agent_path = root / "agents/openai.yaml"
+    if agent_path.is_file():
+        agent_text = read_text(agent_path)
+        if "MG Industrial Equipment Manual Builder" not in agent_text:
+            failures.append("agents/openai.yaml display name mismatch.")
+        if f"${CURRENT_SKILL_NAME}" not in agent_text:
+            failures.append("agents/openai.yaml default prompt does not invoke this skill.")
 
     return {
         "passed": not failures,

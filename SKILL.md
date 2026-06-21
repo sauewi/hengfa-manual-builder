@@ -1,182 +1,102 @@
 ---
-name: hengfa-manual-builder
-version: 0.3.0
+name: mg-industrial-equipment-manual-builder
 description: >
-  Use this skill whenever creating, revising, auditing, installing, or
-  open-sourcing a Hengfa-style heat-transfer machine manual skill workflow,
-  especially for bilingual HTML manuals, project folder management, SFC/timing
-  review drafts, HMI parameter explanations, bilingual image annotations,
-  Playwright/PDF verification, and reusable skill handoff. Trigger strongly for
-  恒发, 热转印机说明书, 平面热转印机, 大幅面热转印, 中英双语HTML,
-  SFC时序审核, HMI参数, 图片双语标注, 项目管理, 说明书技能, and 做成技能.
+  Use when creating, revising, auditing, installing, or open-sourcing A4-paged
+  Chinese or bilingual HTML manuals for industrial or non-standard equipment,
+  especially with machine photos, HMI parameter pages, SFC/timing review,
+  material-flow evidence, fixture changeover, repeated rework, or high token usage.
+metadata:
+  version: "0.7.0"
 ---
 
-# Hengfa Manual Builder
+# MG Industrial Equipment Manual Builder
 
-This skill turns a Hengfa-style heat-transfer machine manual project into a repeatable skill-driven production workflow. It owns the project structure, chapter template, HMI/SFC parameter explanation, verification gates, and handoff rules inside one skill so manual creation does not require chaining a second HMI-parameter skill.
+## Core Principle
 
-## Operating Rules
+Build one evidence-backed HTML around the operator's task. Explicit A4 sheets are the single framework on every device; make important equipment and HMI images large inside each sheet.
 
-1. Treat the final customer deliverable as a bilingual HTML file unless the user asks for an additional export.
-2. Keep the project folder managed from the start: source drafts, project management files, bilingual annotation images, temporary files, and outputs must be separated.
-3. Build the SFC / timing layer before freezing HMI parameter explanations. The SFC is the backbone for parameter cards, manual debugging steps, and troubleshooting.
-4. Preserve original machine evidence. When a photo only has Chinese labels, add English annotations without replacing or redrawing the real device image. Use image generation only as a wording/layout aid if it distorts the equipment.
-5. Do not invent unconfirmed temperature, pressure, speed, capacity, PLC internals, hidden options, or numeric setpoints.
-6. Keep internal reasoning out of the final HTML. Project notes may record linkage logic, but customer pages should use concise operator-facing wording.
-7. Verify the HTML as a real artifact: relative image paths, bilingual coverage, mobile readability, browser screenshots, and PDF pagination when exporting PDF.
+## Non-Negotiable Rules
 
-## Project Folder Contract
+1. HTML is the only customer deliverable. Do not create PDF, PNG, a desktop edition, or duplicate HTML. Conversion is outside this skill.
+2. Design the HTML with explicit `210 mm x 297 mm` A4 page containers and deliberate page groups. Do not rely on browser auto-pagination alone.
+3. The A4 sheet is the only frame. Phone and PC keep the same page composition; only scale the sheet proportionally to the viewport. Do not create device-specific nested page systems or structural reflow.
+4. Give detailed mechanism and HMI images at least 75% of the A4 content width. Prefer a full-width image band or dedicated image page over two narrow detailed images side by side.
+5. Work inside the project folder, preserve original evidence, and do not invent numeric setpoints, PLC behavior, hidden modes, or transfer points.
+6. Get outline approval before full HTML; keep internal reasoning out of customer pages.
 
-Use this structure unless the existing project already has a compatible structure:
+## Required Project State
 
-```text
-项目根目录/
-  设备图片/
-  物理调节/
-  HMI界面/
-  双语标注图/
-  源稿/
-  项目管理/
-  输出/
-  临时文件/
-```
+Maintain:
 
-Required management artifacts:
+- `项目管理/项目看板.md`: phase, filename, status, sources, verification.
+- `项目管理/交接摘要.md`: compact state for continuation.
+- `项目管理/SFC时序审核稿.md`: evidence, sequence, mappings, status.
+- `源稿/图片双语注释清单.md`: source, annotation, final image.
+- `源稿/HTML章节结构.md`: approved task outline.
+- `源稿/A4分页规划.md`: page purpose, content group, image share.
 
-- `项目管理/项目看板.md`: current phase, folder map, delivery principles, task status, outputs.
-- `项目管理/SFC时序审核稿.md`: SFC draft/confirmed sequence, evidence sources, parameter-to-step mapping.
-- `源稿/图片双语注释清单.md`: original image, bilingual output image, English annotations, and image-generation decisions.
-- `源稿/HTML章节结构.md`: chapter plan, final file name, review status, and post-review changes.
+Use `references/project-structure.md` only when creating or repairing the folder structure.
 
-## Workflow
+## Three-Phase Workflow
 
-### 1. Intake and Inventory
+### A. Evidence and Outline
 
-List all source files and classify them as machine overview, mechanical adjustment, HMI screens, manual buttons, IO/electrical, control panel, air circuit, feedback, source drafts, and outputs.
+Inventory once. Freeze the final HTML filename and language. Write:
 
-Create or update the project board before writing the final manual. Record:
+- one sentence describing the novice's real job;
+- one evidence-backed material-flow chain from pickup to final handoff;
+- one batch of unresolved mechanism or timing questions.
 
-- final deliverable type,
-- folder purpose,
-- delivery principles,
-- current task status,
-- known source material,
-- verification outputs.
+Order the outline by what the novice must observe or decide next, not by generic machine chapters. Confirm each transfer point from evidence and build the SFC review before final parameter explanations. After outline approval, create the A4 page map before full HTML.
 
-### 2. Evidence-Based SFC Gate
+Read `references/manual-builder-workflow.md` for the full evidence and SFC gate.
 
-Create the SFC review draft before final HMI explanations. Include:
+### B. HTML Build and Feedback
 
-- evidence source table,
-- machine action overview,
-- numbered SFC steps,
-- HMI parameter-to-SFC mapping,
-- manual button-to-SFC mapping,
-- key review questions or already-confirmed review points.
+For each important HMI item, connect label, mechanism, SFC step, adjustment effect, use scenario, value acquisition, verification, evidence, and confirmation status. Exclude unresolved claims.
 
-For timing parameters, state the time origin. If the user later submits feedback, absorb it into the SFC document and change the status to confirmed before using it in final customer content.
+For position values supported by live HMI travel data: jog in small steps, visually confirm the mechanism, read current position, enter the target, and retest. Do not copy live position into speed, time, or offset fields. Pair the HMI with the real mechanism and observation point.
 
-If the user asks not to pause for confirmation, still save the review gate as a project artifact and proceed only with evidence-backed or mechanism-safe wording. Do not publish uncertain details as fact.
+Approve one representative HMI/mechanism A4 page before repeating the pattern. Keep related structure and HMI on the same page only when labels remain legible; otherwise use stacked full-width bands or consecutive pages. Split dense parameter groups at semantic boundaries. Then complete one A4-paged HTML and revise it once per feedback batch.
 
-### 2.5 Integrated HMI Parameter Explanation
+Read `references/a4-page-layout.md` for page and image-share rules, and `references/hmi-parameter-explanation.md` only for parameter-writing details.
 
-Explain HMI parameters through machine behavior, not translation alone. For each meaningful parameter or manual button, build or mentally complete this model:
+### C. Final HTML Verification
 
-| ID | UI Chinese | UI English from screen | Unit/value | Controlled mechanism | SFC step | Confirmed behavior | Adjustment effect | Use scenario | Verification | Evidence | Status |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-
-Status rules:
-
-- `Confirmed`: backed by screenshot, user confirmation, project file, photo, SFC, or visible machine evidence.
-- `Mechanism-safe`: generally safe explanation without hidden options, numeric ranges, or unconfirmed sequence claims.
-- `Needs question`: keep out of final customer HTML until confirmed.
-
-Write customer-facing parameter explanations in this order:
-
-1. Chinese label plus original UI English.
-2. SFC step or transition.
-3. Controlled action, mechanism, or process.
-4. Adjustment effect.
-5. Use scenario.
-6. Verification method.
-7. Caution only when safety, collision, heating, pressure, or timing risk exists.
-
-Preserve original UI English as the anchor even if it is imperfect. Add a clearer explanation after it instead of replacing it. If a parameter changes timing, mode, speed, position, sensor handling, or actuator behavior, locate it on the SFC before writing final manual text. See `references/hmi-parameter-explanation.md` for the full integrated workflow.
-
-### 3. Image Bilingualization
-
-For each image:
-
-- If the image already has bilingual labels or readable UI English, use it directly.
-- If it has only Chinese callouts, create an English annotation plan first.
-- Prefer local overlay on the original image for final output so the machine remains faithful.
-- If an image-generation model is used, record whether it changed equipment structure. Use it for wording/layout only when fidelity is not good enough.
-
-### 4. Manual Build
-
-Use a concise customer-facing bilingual structure:
-
-1. 设备概览 / Machine Overview
-2. 安全事项 / Safety
-3. 快速上手 / Quick Start
-4. 机械调节 / Mechanical Adjustment
-5. HMI 参数 / HMI Parameters
-6. SFC 自动循环时序 / SFC Automatic Sequence
-7. 手动调试 / Manual Debugging
-8. 故障排查 / Troubleshooting
-9. 附录 / Appendix
-
-Use the original UI English as the anchor for HMI cards, then add clearer English explanation below it. Keep bilingual pairs close together.
-
-### 5. Feedback Absorption
-
-When feedback arrives:
-
-- categorize it as SFC/timing, wording, visual layout, image annotation, missing content, or final export;
-- update project management documents first if the feedback changes the authoritative logic;
-- revise the HTML only after the source of truth is updated;
-- preserve useful backups, but make the final file easy to identify.
-
-### 6. Verification
-
-Before final delivery, run an artifact audit:
-
-- final HTML exists and uses relative image paths;
-- no referenced image is missing;
-- Chinese and English explanations are both present;
-- no draft/internal/project-only wording is visible in final HTML;
-- SFC is confirmed or uncertainty is excluded from customer pages;
-- screenshots have been captured for desktop/mobile when feasible;
-- exported PDF is A4 and page breaks do not split important cards or figures.
-
-If this skill package is available, run:
+Run the bundled audit, then verify A4 pages at desktop and phone viewport widths after the HTML is complete or after a substantive layout change:
 
 ```powershell
 python scripts/audit_manual_project.py "C:\path\to\project"
 ```
 
-## Output Shape
+Confirm zero page overflow, intact semantic blocks, identical composition across devices, detailed images at least 75% of content width, loaded relative assets, working language modes, and one customer-facing HTML. Screenshots and print checks are internal only. Read `references/audit-checklist.md` at closeout.
 
-When producing a new project, finish with a concise status report:
+## Token and Context Control
 
-```markdown
-已完成：
-- 项目管理文件：
-- 最终 HTML：
-- 双语标注图：
-- 验证输出：
+At each phase boundary, rewrite `项目管理/交接摘要.md` within 1,200 Chinese characters or roughly 800 English words. Keep only the goal, confirmed flow, approved structure, unresolved questions, next files, and latest verification.
 
-需要保留给后续复用的经验：
-- [mechanism/SFC/image/verification note]
-```
+For later work:
 
-Do not end with a generic offer. Name the next concrete artifact if more work remains.
+- read the handoff summary first and only the files it names;
+- do not repeat inventory or reread unchanged large files;
+- use targeted search and line ranges instead of printing full HTML or logs;
+- batch independent reads and combine checks into concise PASS/FAIL output;
+- use targeted static checks for small wording changes;
+- recommend a fresh thread after outline or HTML approval, using the handoff summary; never create one without explicit user request.
 
-## Related References
+Read `references/rework-prevention.md` when rework or context growth appears.
 
-- `references/manual-builder-workflow.md`: full workflow with stage gates and checklists.
-- `references/hmi-parameter-explanation.md`: integrated HMI/SFC parameter explanation workflow.
-- `references/project-structure.md`: project folder and file naming standard.
-- `references/audit-checklist.md`: final verification checklist.
-- `templates/项目看板.md`: reusable project board template.
-- `templates/SFC时序审核稿.md`: reusable SFC review draft template.
+## Delivery Report
+
+Report only the project management files, final A4-paged HTML, internal verification result, and reusable confirmed knowledge. Do not list historical or internal artifacts as customer deliverables.
+
+## References
+
+- `references/html-only-delivery.md`: delivery boundary.
+- `references/a4-page-layout.md`: single A4 framework, image-share rules, and verification.
+- `references/manual-builder-workflow.md`: full workflow and SFC gates.
+- `references/hmi-parameter-explanation.md`: integrated HMI/SFC explanation.
+- `references/rework-prevention.md`: rework and token controls.
+- `references/project-structure.md`: folders and naming.
+- `references/audit-checklist.md`: final audit.
+- `templates/项目看板.md`, `templates/SFC时序审核稿.md`, `templates/交接摘要.md`: reusable state files.

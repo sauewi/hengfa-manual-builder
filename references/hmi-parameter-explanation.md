@@ -1,6 +1,6 @@
 # Integrated HMI Parameter Explanation
 
-This reference is bundled inside `hengfa-manual-builder` so a manual project can handle HMI parameters, SFC timing, manual-operation screens, mode selectors, and customer-ready bilingual explanations without calling a separate HMI parameter skill.
+This reference is bundled inside `mg-industrial-equipment-manual-builder` so a manual project can handle HMI parameters, SFC timing, manual-operation screens, mode selectors, and customer-ready bilingual explanations without calling a separate HMI parameter skill.
 
 ## Purpose
 
@@ -156,7 +156,7 @@ When the final deliverable is customer-facing HTML:
 - Replacing original UI English with polished English and losing the screen anchor.
 - Writing use scenarios before knowing the actual mechanism.
 - Mixing internal confirmation notes into customer HTML.
-- Letting PDF/export concerns drive HTML content.
+- Letting downstream conversion concerns drive HTML content.
 
 ## Completion Checklist
 

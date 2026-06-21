@@ -1,8 +1,8 @@
-# hengfa-manual-builder
+# mg-industrial-equipment-manual-builder
 
-[![CI](https://github.com/sauewi/hengfa-manual-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/sauewi/hengfa-manual-builder/actions/workflows/ci.yml)
+[![CI](https://github.com/sauewi/mg-industrial-equipment-manual-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/sauewi/mg-industrial-equipment-manual-builder/actions/workflows/ci.yml)
 
-A reusable Codex skill for producing professional bilingual HTML manuals for Hengfa-style heat-transfer and hot-stamping equipment.
+A reusable Codex skill for producing professional Chinese or bilingual HTML manuals for industrial and non-standard equipment.
 
 The skill focuses on the parts that make non-standard machine manuals hard to repeat well:
 
@@ -10,7 +10,8 @@ The skill focuses on the parts that make non-standard machine manuals hard to re
 - SFC / timing review before HMI parameter explanations,
 - bilingual image annotation without redrawing real machine photos,
 - concise customer-facing Chinese and English manual content,
-- browser and PDF verification,
+- explicit A4 page planning as one framework across devices,
+- large image allocation, page-overflow, and HTML verification,
 - release checks for safe reuse and open-source publishing.
 
 No customer photos, HMI screenshots, PDFs, feedback images, private paths, or project deliverables are bundled in this repository.
@@ -19,12 +20,13 @@ No customer photos, HMI screenshots, PDFs, feedback images, private paths, or pr
 
 Use this skill when a manual project involves:
 
-- heat-transfer or hot-stamping equipment,
+- industrial or non-standard equipment,
+- heat-transfer, hot-stamping, conveying, lifting, or fixture-changeover machinery,
 - bilingual Chinese / English HTML output,
 - HMI parameter pages that need behavior explanations,
 - SFC, timing, sensor, or actuator sequence review,
 - Chinese-only machine callouts that need English annotations,
-- final artifact verification, including PDF pagination.
+- final A4-paged HTML verification, large page images, and token-efficient phase handoff.
 
 ## Repository Contents
 
@@ -34,8 +36,13 @@ references/manual-builder-workflow.md Skill-internal workflow reference
 references/hmi-parameter-explanation.md Integrated HMI/SFC parameter workflow
 references/project-structure.md       Folder and naming contract
 references/audit-checklist.md         Manual delivery audit checklist
+references/html-only-delivery.md      HTML-only delivery boundary
+references/a4-page-layout.md          Single A4 framework and image-share rules
+references/rework-prevention.md       Rework and context-control guidance
 templates/项目看板.md                  Project board template
 templates/SFC时序审核稿.md             SFC review draft template
+templates/交接摘要.md                  Compact phase handoff template
+templates/A4分页规划.md                Semantic A4 page-map template
 scripts/audit_manual_project.py       Audit a real manual project
 scripts/check_release.py              Audit this repository before release
 evals/evals.json                      Lightweight skill evaluation prompts
@@ -46,7 +53,7 @@ evals/evals.json                      Lightweight skill evaluation prompts
 Copy this folder to your Codex skills directory:
 
 ```text
-%USERPROFILE%\.codex\skills\hengfa-manual-builder
+%USERPROFILE%\.codex\skills\mg-industrial-equipment-manual-builder
 ```
 
 ## Audit A Manual Project

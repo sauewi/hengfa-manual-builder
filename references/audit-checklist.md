@@ -5,10 +5,12 @@ Run this checklist before calling the manual complete.
 ## Project Management
 
 - [ ] Project board exists and lists folder structure, delivery principles, task status, and outputs.
+- [ ] Compact handoff summary exists and reflects the current confirmed phase state.
 - [ ] SFC review draft exists.
 - [ ] SFC status is confirmed or all uncertain sequence claims are excluded from final HTML.
 - [ ] Image bilingual annotation list exists if any Chinese-only callout image is used.
 - [ ] HTML chapter structure exists or is reflected in the project board.
+- [ ] A4 page map exists and lists each page's operator purpose and content group.
 
 ## Final HTML
 
@@ -20,6 +22,7 @@ Run this checklist before calling the manual complete.
 - [ ] Original HMI UI English is preserved where shown in screenshots.
 - [ ] No customer-facing draft markers remain.
 - [ ] No internal-only project notes are visible.
+- [ ] Content is grouped into explicit A4 page containers rather than relying only on automatic print breaks.
 
 ## Content
 
@@ -37,13 +40,15 @@ Run this checklist before calling the manual complete.
 
 - [ ] Chinese-only images have bilingual output images or HTML-side English explanation.
 - [ ] Image-generation outputs are not used if they redraw or distort machine structure.
-- [ ] Final images remain readable on mobile.
+- [ ] A4 mechanism/HMI imagery remains legible at fitted-page size.
+- [ ] Detailed primary images occupy at least 75% of A4 content width; narrow side-by-side detail images are avoided.
 
 ## Verification
 
-- [ ] Desktop screenshot captured when feasible.
 - [ ] Mobile screenshot captured when feasible.
-- [ ] PDF exported only if requested or useful.
-- [ ] PDF is A4 when requested.
-- [ ] PDF page breaks do not split critical cards, figures, or safety tips.
+- [ ] Every A4 page has zero content overflow.
+- [ ] Phone and PC preserve the same A4 page count, order, and composition without nested device frames.
+- [ ] Static audit and A4 screen checks at desktop/phone viewport widths pass.
+- [ ] Tool output is concise; full HTML and unchanged large files were not repeatedly printed.
+- [ ] The approved HTML is the only customer deliverable.
 

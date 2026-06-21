@@ -1,10 +1,10 @@
 {
-  "skill_name": "hengfa-manual-builder",
+  "skill_name": "mg-industrial-equipment-manual-builder",
   "evals": [
     {
       "id": 1,
       "prompt": "我要用一批设备照片、HMI截图和反馈图，制作一份平面热转印机中英双语HTML说明书，SFC时序必须先整理出来。",
-      "expected_output": "Creates a managed project workflow, identifies required folders and source documents, drafts an SFC review gate before final HMI parameter explanations, and keeps the final deliverable as bilingual HTML."
+      "expected_output": "Creates a managed project workflow, drafts an SFC review gate, prepares a semantic A4 page map, and keeps the only customer deliverable as responsive bilingual HTML."
     },
     {
       "id": 2,
@@ -13,13 +13,38 @@
     },
     {
       "id": 3,
-      "prompt": "用户已经给了SFC审核意见，现在要吸收意见、重写最终HTML，并导出PDF，分页不能影响阅读。",
-      "expected_output": "Updates the SFC source of truth first, revises final HTML without internal notes, exports an A4 PDF, and verifies page breaks, image references, and project board delivery records."
+      "prompt": "用户已经给了SFC审核意见，现在要吸收意见并重写最终HTML；最终只交HTML。",
+      "expected_output": "Updates the SFC source of truth first, revises the final A4-paged HTML without internal notes, verifies page composition and image share, and does not create another customer format."
     },
     {
       "id": 4,
       "prompt": "我有一页HMI参数截图，里面有延时、速度、卷膜方式和手动按钮。请直接在说明书技能里解释，不要再调用别的HMI参数技能。",
       "expected_output": "Uses the integrated HMI/SFC parameter workflow, builds a parameter confirmation model, maps timing and motion parameters to SFC steps, preserves UI English, and outputs customer-ready bilingual explanations without requiring another skill."
+    },
+    {
+      "id": 5,
+      "prompt": "做一份非标设备说明书，客户只用手机查看。最终只交HTML，PDF我自己处理。",
+      "expected_output": "Freezes the HTML filename and language, then produces one explicit A4-paged HTML using the same page composition on every device; PDF and other conversions remain outside the skill workflow."
+    },
+    {
+      "id": 6,
+      "prompt": "这个项目已经讨论很久，大纲刚通过。继续制作HTML时不要重新读取全部资料，也不要把整份HTML反复输出到对话里。",
+      "expected_output": "Updates a compact handoff summary at the phase boundary, reads only the files named for the HTML phase, uses targeted searches and bounded tool output, and reserves full browser verification for the completed HTML or a substantive layout change."
+    },
+    {
+      "id": 7,
+      "prompt": "换了不同规格治具，说明书要告诉新人参数怎么得到。界面有正反点动和实时当前位置。",
+      "expected_output": "Documents the position-value acquisition loop: jog in small steps, visually confirm the mechanism, read live current position, write the target field, and retest; it also separates offsets, speed, and timing from live position values."
+    },
+    {
+      "id": 8,
+      "prompt": "先给我说明书大纲。资料里有机械照片、HMI和运行视频，流程关系不允许靠猜。",
+      "expected_output": "Builds an evidence-backed material-flow chain and novice job statement before the outline, batches uncertain links for confirmation, and does not start full HTML before outline approval."
+    },
+    {
+      "id": 9,
+      "prompt": "说明书HTML要按A4一页一页设计，手机和电脑使用同一套页面，不要框架套框架。设备图和HMI截图要占得更大，不要两张细节图挤在窄栏里。",
+      "expected_output": "Uses explicit 210 mm by 297 mm semantic page containers as the only framework across devices, preserves one page composition under proportional viewport scaling, and gives detailed mechanism/HMI images at least 75% of A4 content width through full-width bands or dedicated pages."
     }
   ]
 }
